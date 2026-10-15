@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: 2026 the innova2 contributors
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# innova2_p2p_mmap_xocl_drm.patch -- XRT 2.27 (master 1ea5176db) xocl, kernel >= 6.17: map P2P BO pages with
+# vmf_insert_mixed() instead of vm_insert_page() (bug B7 in docs/xrt_bugs.md). Apply to the DKMS tree with
+# `patch -p1 -d /usr/src/xrt-2.27.0`, or to an XRT checkout with `patch -d src/runtime_src/core/pcie/driver/linux -p2`.
+--- a/driver/xocl/userpf/xocl_drm.c	2026-10-14 21:22:35.453195660 +0000
++++ b/driver/xocl/userpf/xocl_drm.c	2026-10-14 21:22:35.472090464 +0000
+@@ -301,6 +301,10 @@
+ #else
+ 		ret = vmf_insert_mixed(vma, vmf_address, pfn);
+ #endif
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
++		/* vm_insert_page() refuses the ZONE_DEVICE (PCI P2PDMA) pages of a P2P BO: every CPU access to a mapped
++		 * P2P BO took SIGBUS (7.0). Map the BAR pfn as a special pte, as the CMA branch below does. */
++		ret = vmf_insert_mixed(vma, vmf_address, page_to_pfn(xobj->pages[page_offset]));
+ #else
+ 		ret = vm_insert_page(vma, vmf_address, xobj->pages[page_offset]);
+ #endif

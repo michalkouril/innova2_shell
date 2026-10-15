@@ -1,0 +1,77 @@
+LicenseRef-ERT-BSP: the notices of AMD's (Xilinx's) ERT board support package, reproduced verbatim from
+https://github.com/Xilinx/ERT-BSP (commit 2c7d31de608e686b966ac1b857f97079eb9f999d), file "LEGAL NOTICE.txt".
+The ERT firmware baked into this shell's bitstream (XRT's command scheduler, Apache-2.0, Copyright (C) 2016-2019
+Xilinx, Inc.) is linked with that package's start-up code (crt0/crtinit/exit and the MicroBlaze vectors).
+--------------------------------------------------------------------------------------------------------------
+LEGAL NOTICE FOR THE FOLLOWING FILES:
+
+https://github.com/Xilinx/ERT-BSP/blob/main/BSPs/sched_bsp.tar.bz2
+https://github.com/Xilinx/ERT-BSP/blob/main/BSPs/sched_bsp_u50.tar.bz2
+https://github.com/Xilinx/ERT-BSP/blob/main/BSPs/sched_bsp_v20.tar.bz2
+https://github.com/Xilinx/ERT-BSP/blob/main/BSPs/sched_bsp_v30.tar.bz2
+
+THE ABOVE REFERENCED FILES CONTAIN SOFTWARE COPYRIGHTED BY XILINX AND THIRD PARTIES AND ARE LICENSED UNDER THE FOLLOWING LICENSE TERMS AND CONDITIONS:
+
+Copyright (C) 2010-2021 Xilinx, Inc. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+Copyright (c) 1995 Cygnus Support
+
+The authors hereby grant permission to use, copy, modify, distribute,
+and license this software and its documentation for any purpose, provided
+that existing copyright notices are retained in all copies and that this
+notice is included verbatim in any distributions. No written agreement,
+license, or royalty fee is required for any of the authorized uses.
+Modifications to this software may be copyrighted by their authors
+and need not follow the licensing terms described here, provided that
+the new terms are clearly indicated on the first page of each file where
+they apply.
+
+
+Copyright DornerWorks 2016
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+following conditions are met:
+1.	 Redistributions of source code must retain the above copyright notice, this list of conditions and the
+following disclaimer.
+
+THIS SOFTWARE IS PROVIDED BY DORNERWORKS FOR USE ON THE CONTRACTED PROJECT, AND ANY EXPRESS OR IMPLIED WARRANTY
+IS LIMITED TO THIS USE. FOR ALL OTHER USES THIS SOFTWARE IS PROVIDED ''AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL DORNERWORKS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+(C) 2006 - Grzegorz Milos - Cambridge University 
+Copyright (c) 2004 K A Fraser
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+ 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+
+
+

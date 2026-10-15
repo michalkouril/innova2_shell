@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the innova2 contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+dist/
+__pycache__/

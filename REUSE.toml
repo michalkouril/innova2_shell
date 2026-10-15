@@ -1,0 +1,46 @@
+version = 1
+SPDX-PackageName = "innova2_shell"
+SPDX-PackageSupplier = "the innova2 contributors"
+
+[[annotations]]
+path = ["LICENSE_AUDIT.md", "README.md", "packaging/VERSION", "root/lib/firmware/xilinx/innova2_innova2_xdma_202320_4_primary.prm", "root/lib/firmware/xilinx/innova2_innova2_xdma_202320_4_secondary.prm", "root/lib/firmware/xilinx/innova2_innova2_xdma_202320_4_bope_primary.prm", "root/lib/firmware/xilinx/innova2_innova2_xdma_202320_4_bope_secondary.prm", "root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/license/COPYRIGHT", "root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/license/LICENSE", "root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/test/platform.json", "root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/tools/xrt/README.md", "root/usr/bin/innova2_flash_user", "root/usr/bin/innova2_ddr_mode", "root/usr/share/doc/innova2-xdma/copyright", "NOTICE"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 the innova2 contributors"]
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/tools/xbflash.probe"]
+precedence = "override"
+SPDX-FileCopyrightText = ["Xilinx, Inc.", "2026 the innova2 contributors"]
+SPDX-License-Identifier = "Apache-2.0"
+
+# the static bitstream and the flash images carry the ERT firmware (XRT's scheduler + the ERT-BSP start-up code)
+[[annotations]]
+path = ["root/lib/firmware/xilinx/innova2_innova2_xdma_202320_4.bit", "root/lib/firmware/xilinx/innova2_innova2_xdma_202320_4_bope_primary.bin", "root/lib/firmware/xilinx/innova2_innova2_xdma_202320_4_bope_secondary.bin", "root/lib/firmware/xilinx/innova2_innova2_xdma_202320_4_primary.mcs", "root/lib/firmware/xilinx/innova2_innova2_xdma_202320_4_secondary.mcs"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 the innova2 contributors", "Advanced Micro Devices, Inc.", "2016-2019 Xilinx, Inc.", "2010-2021 Xilinx, Inc."]
+SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-AMD-IP AND LicenseRef-ERT-BSP"
+
+[[annotations]]
+path = ["root/lib/firmware/xilinx/10ee-6a9f-4351-000000006ad79000.xsabin", "root/lib/firmware/xilinx/10ee-6aa0-4351-000000006ad79000.xsabin", "root/lib/firmware/xilinx/10ee-788f-4351-000000006ad79000.xsabin", "root/lib/firmware/xilinx/10ee-7890-4351-000000006ad79000.xsabin", "root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/test/bandwidth.xclbin", "root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/test/verify.xclbin"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 the innova2 contributors", "Advanced Micro Devices, Inc."]
+SPDX-License-Identifier = "Apache-2.0 AND LicenseRef-AMD-IP"
+
+[[annotations]]
+path = ["root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/license/GPL-2.0-only.txt"]
+precedence = "override"
+SPDX-FileCopyrightText = ["1989, 1991 Free Software Foundation, Inc."]
+SPDX-License-Identifier = "GPL-2.0-only"
+
+[[annotations]]
+path = ["root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/license/LicenseRef-AMD-IP.txt"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2026 the innova2 contributors"]
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["root/opt/xilinx/dsa/innova2_innova2_xdma_202320_4/license/LicenseRef-ERT-BSP.txt"]
+precedence = "override"
+SPDX-FileCopyrightText = ["2010-2021 Xilinx, Inc.", "1995 Cygnus Support", "2016 DornerWorks", "2006 Grzegorz Milos - Cambridge University", "2004 K A Fraser"]
+SPDX-License-Identifier = "LicenseRef-ERT-BSP"

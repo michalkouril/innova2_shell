@@ -1,0 +1,11 @@
+===================================
+Configuration Memory information
+===================================
+File Format        BIN
+Interface          SPIX8
+Size               64M
+Start Address      0x00000000
+End Address        0x03FFFFFF
+
+Addr1         Addr2         Date                    File(s)
+0x00000000    0x00A6FB91    Oct 14 12:11:40 2026    /build/release/innova2_innova2_xdma_202320_4.bit

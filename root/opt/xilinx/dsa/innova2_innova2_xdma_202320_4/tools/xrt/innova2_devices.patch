@@ -1,0 +1,169 @@
+# SPDX-FileCopyrightText: 2026 the innova2 contributors
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# innova2_devices.patch -- data-only xocl board entries for the Innova-2 shells: user PF 10ee:6a90 subsystem 0x4351
+# matched by VBNV (xilinx_innova2_xdma_202320_3, innova2_innova2_{xdma,noddr}_202320_{3,4}). The subdevice lists add
+# the ADDR_TRANSLATOR (XRT host memory, fp6+) and the ERT/CU interrupt path: ep_ert_sched_00 at user BAR0 0x110000,
+# ep_intc_cu_00 at 0x120000, ep_ert_config_00 (cfg_gpio) at 0x121000. ert4 and later also answer ERT status at stock
+# XRT's 0x180000 and run without this patch, except for XRT host memory (the ADDR_TRANSLATOR); ert3 and earlier need it.
+# Apply to the DKMS tree with `patch -p1 -d /usr/src/xrt-2.27.0`, or to an XRT checkout with
+# `patch -d src/runtime_src/core/pcie/driver/linux -p2`. Base: XRT master 1ea5176db (2.27.0).
+--- a/driver/xocl/devices.h
++++ b/driver/xocl/devices.h
+@@ -2014,6 +2014,121 @@ struct xocl_subdev_map {
+ 		.subdev_num = ARRAY_SIZE(USER_RES_XDMA),		\
+ 	}
+ 
++/* innova2 (2026-10-03): XRT host memory (HOST[0] bank) on the Innova-2 fp6+ shells. The card uses the static
++ * USER_XDMA profile (10ee:6a90 sub 4351), which never instantiates the address translator; its
++ * shell_utils_addr_remap sits at user-PF BAR0 + 0x101000 (metadata node ep_remap_data_c2h_00). Selected only by the
++ * card's own VBNV through XOCL_DSA_VBNV_MAP below, so real U200 xdma shells with the same IDs are unaffected.
++ */
++#define	XOCL_RES_ADDR_TRANSLATOR_INNOVA2				\
++	((struct resource []) {				\
++		{					\
++			.start	= 0x101000,		\
++			.end	= 0x101FFF,		\
++			.flags  = IORESOURCE_MEM,	\
++		}					\
++	})
++
++#define	XOCL_DEVINFO_ADDR_TRANSLATOR_INNOVA2			\
++	{						\
++		XOCL_SUBDEV_ADDR_TRANSLATOR,			\
++		XOCL_ADDR_TRANSLATOR,				\
++		XOCL_RES_ADDR_TRANSLATOR_INNOVA2,		\
++		ARRAY_SIZE(XOCL_RES_ADDR_TRANSLATOR_INNOVA2),	\
++		.level = XOCL_SUBDEV_LEVEL_PRP,			\
++		.override_idx = -1,				\
++	}
++
++#define	USER_RES_XDMA_INNOVA2						\
++		((struct xocl_subdev_info []) {				\
++			XOCL_DEVINFO_FEATURE_ROM,			\
++			XOCL_DEVINFO_XDMA,				\
++			XOCL_DEVINFO_MAILBOX_USER,			\
++			XOCL_DEVINFO_ICAP_USER,				\
++			XOCL_DEVINFO_XMC_USER,				\
++			XOCL_DEVINFO_AF_USER,				\
++			XOCL_DEVINFO_INTC,				\
++			XOCL_DEVINFO_ERT_CTRL,                          \
++			XOCL_DEVINFO_ADDR_TRANSLATOR_INNOVA2,		\
++		})
++
++#define	XOCL_BOARD_USER_XDMA_INNOVA2					\
++	(struct xocl_board_private){					\
++		.flags		= 0,					\
++		.subdev_info	= USER_RES_XDMA_INNOVA2,		\
++		.subdev_num = ARRAY_SIZE(USER_RES_XDMA_INNOVA2),	\
++	}
++
++/* innova2 (2026-10-11, PROTOTYPE): CU completion interrupts WITHOUT the FDT (rebuild/CU_INTERRUPTS.md section 7).
++ * intc_probe() takes its CU-capable path (get_ssv3_res) whenever it has a 2nd MEM resource and finds every window and
++ * irq by NAME, so a user-PF board entry can supply them. User-PF BAR0 layout of the interrupt-capable shell:
++ *   0x110000-0x11FFFF  one zero responder: ep_ert_sched_00 at 0x110000 (ERT status reads 0: no ERT interrupts),
++ *                      ep_intc_cu_01..03 at 0x111000-0x113000 (ISR reads 0: banks 1-3 never pending)
++ *   0x120000 ep_intc_cu_00     AXI INTC (PG099), CU interrupts 0..31 -> usr_irq_req[0]
++ *   0x121000 ep_ert_config_00  cfg_gpio: AXI GPIO, ch1 control (read back), ch2 status tied to 1
++ * (shell: ct_src repro-400k-cuintr, bd/pfm_top_bd.tcl, platform version 202320.4)
++ * irq N of ep_ert_sched_00 and ep_intc_cu_0N must be the same user interrupt (get_ssv3_res checks it).
++ */
++#define	XOCL_RES_INTC_INNOVA2						\
++	((struct resource []) {						\
++		{ .name = "ep_ert_sched_00", .start = 0x110000, .end = 0x110FFF, .flags = IORESOURCE_MEM }, \
++		{ .name = "ep_intc_cu_00",   .start = 0x120000, .end = 0x120FFF, .flags = IORESOURCE_MEM }, \
++		{ .name = "ep_intc_cu_01",   .start = 0x111000, .end = 0x111FFF, .flags = IORESOURCE_MEM }, \
++		{ .name = "ep_intc_cu_02",   .start = 0x112000, .end = 0x112FFF, .flags = IORESOURCE_MEM }, \
++		{ .name = "ep_intc_cu_03",   .start = 0x113000, .end = 0x113FFF, .flags = IORESOURCE_MEM }, \
++		{ .name = "ep_ert_sched_00_interrupt_cu_bank_00", .start = 0, .end = 0, .flags = IORESOURCE_IRQ }, \
++		{ .name = "ep_ert_sched_00_interrupt_cu_bank_01", .start = 1, .end = 1, .flags = IORESOURCE_IRQ }, \
++		{ .name = "ep_ert_sched_00_interrupt_cu_bank_02", .start = 2, .end = 2, .flags = IORESOURCE_IRQ }, \
++		{ .name = "ep_ert_sched_00_interrupt_cu_bank_03", .start = 3, .end = 3, .flags = IORESOURCE_IRQ }, \
++		{ .name = "ep_intc_cu_00", .start = 0, .end = 0, .flags = IORESOURCE_IRQ }, \
++		{ .name = "ep_intc_cu_01", .start = 1, .end = 1, .flags = IORESOURCE_IRQ }, \
++		{ .name = "ep_intc_cu_02", .start = 2, .end = 2, .flags = IORESOURCE_IRQ }, \
++		{ .name = "ep_intc_cu_03", .start = 3, .end = 3, .flags = IORESOURCE_IRQ }, \
++	})
++
++#define	XOCL_DEVINFO_INTC_INNOVA2					\
++	{								\
++		XOCL_SUBDEV_INTC,					\
++		XOCL_INTC,						\
++		XOCL_RES_INTC_INNOVA2,					\
++		ARRAY_SIZE(XOCL_RES_INTC_INNOVA2),			\
++		.override_idx = -1,					\
++	}
++
++#define	XOCL_RES_CFG_GPIO_INNOVA2					\
++	((struct resource []) {						\
++		{ .name = "ep_ert_config_00", .start = 0x121000, .end = 0x121FFF, .flags = IORESOURCE_MEM }, \
++	})
++
++#define	XOCL_DEVINFO_CFG_GPIO_INNOVA2					\
++	{								\
++		XOCL_SUBDEV_CFG_GPIO,					\
++		XOCL_CFG_GPIO,						\
++		XOCL_RES_CFG_GPIO_INNOVA2,				\
++		ARRAY_SIZE(XOCL_RES_CFG_GPIO_INNOVA2),			\
++		.override_idx = -1,					\
++	}
++
++#define	USER_RES_XDMA_INNOVA2_IRQ					\
++		((struct xocl_subdev_info []) {				\
++			XOCL_DEVINFO_FEATURE_ROM,			\
++			XOCL_DEVINFO_XDMA,				\
++			XOCL_DEVINFO_MAILBOX_USER,			\
++			XOCL_DEVINFO_ICAP_USER,				\
++			XOCL_DEVINFO_XMC_USER,				\
++			XOCL_DEVINFO_AF_USER,				\
++			XOCL_DEVINFO_INTC_INNOVA2,			\
++			XOCL_DEVINFO_CFG_GPIO_INNOVA2,			\
++			XOCL_DEVINFO_ERT_CTRL,				\
++			XOCL_DEVINFO_ADDR_TRANSLATOR_INNOVA2,		\
++		})
++
++#define	XOCL_BOARD_USER_XDMA_INNOVA2_IRQ				\
++	(struct xocl_board_private){					\
++		.flags		= 0,					\
++		.subdev_info	= USER_RES_XDMA_INNOVA2_IRQ,		\
++		.subdev_num = ARRAY_SIZE(USER_RES_XDMA_INNOVA2_IRQ),	\
++	}
++
+ #define	XOCL_BOARD_USER_XDMA_VERSAL					\
+ 	(struct xocl_board_private){					\
+ 		.flags		= XOCL_DSAFLAG_VERSAL,			\
+@@ -3495,6 +3610,33 @@ struct xocl_subdev_map {
+ 	{ XOCL_PCI_DEVID(0x10EE, 0x5099, PCI_ANY_ID, AVALON_USER_RAPTOR2) }
+ 
+ #define XOCL_DSA_VBNV_MAP						\
++	/* innova2: .type DYNAMIC on purpose -- xocl_subdev_create_all() tests '!type != XOCL_DSAMAP_VBNV', which */	\
++	/* skips every VBNV-typed entry (XRT 2.19 bug), so only non-VBNV types are matched on the static path.  */	\
++	{ 0x10EE, 0x6A90, 0x4351,					\
++		.vbnv = "xilinx_innova2_xdma_202320_3",		\
++		.priv_data = &XOCL_BOARD_USER_XDMA_INNOVA2,		\
++		.type = XOCL_DSAMAP_DYNAMIC },				\
++	/* innova2 fp8c+ (2026-10-07, owner-approved): the platform was renamed to innova2_innova2_xdma_202320_3; same    */	\
++	/* user-PF host-memory translator at BAR0 + 0x101000 (ep_remap_data_c2h_00). Exact-match: strncmp on the ROM VBNV. */	\
++	{ 0x10EE, 0x6A90, 0x4351,					\
++		.vbnv = "innova2_innova2_xdma_202320_3",		\
++		.priv_data = &XOCL_BOARD_USER_XDMA_INNOVA2,		\
++		.type = XOCL_DSAMAP_DYNAMIC },				\
++	/* innova2 route V (2026-10-06, owner-approved): the no-DDR shell with the DDR4 MIG in the dynamic region */	\
++	/* keeps the same user-PF host-memory translator at BAR0 + 0x101000 (ep_remap_data_c2h_00).               */	\
++	{ 0x10EE, 0x6A90, 0x4351,					\
++		.vbnv = "innova2_innova2_noddr_202320_3",		\
++		.priv_data = &XOCL_BOARD_USER_XDMA_INNOVA2,		\
++		.type = XOCL_DSAMAP_DYNAMIC },				\
++	/* innova2 CU interrupts (2026-10-11, PROTOTYPE): the interrupt-capable shells, platform version 202320.4 */	\
++	{ 0x10EE, 0x6A90, 0x4351,					\
++		.vbnv = "innova2_innova2_xdma_202320_4",		\
++		.priv_data = &XOCL_BOARD_USER_XDMA_INNOVA2_IRQ,	\
++		.type = XOCL_DSAMAP_DYNAMIC },				\
++	{ 0x10EE, 0x6A90, 0x4351,					\
++		.vbnv = "innova2_innova2_noddr_202320_4",		\
++		.priv_data = &XOCL_BOARD_USER_XDMA_INNOVA2_IRQ,	\
++		.type = XOCL_DSAMAP_DYNAMIC },				\
+ 	{ 0x10EE, 0x5001, PCI_ANY_ID,					\
+ 		.vbnv = "xilinx_u200_xdma_201820_1",		\
+ 		.priv_data = &XOCL_BOARD_USER_XDMA },			\

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2026 the innova2 contributors
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# xocl_dev_minor_6_18.patch -- B6 in docs/xrt_bugs.md: on kernel >= 6.18 XOCL_IDA_ALLOC_RANGE maps to
+# ida_alloc_range(), where max 0 means "only minor 0", so the second card failed to probe. Use max INT_MAX.
+# Apply to the DKMS tree with `patch -p1 -d /usr/src/xrt-2.27.0`, or to an XRT checkout with
+# `patch -d src/runtime_src/core/pcie/driver/linux -p2`. Base: XRT master 1ea5176db (2.27.0).
+--- a/driver/xocl/xocl_subdev.c
++++ b/driver/xocl/xocl_subdev.c
+@@ -1929,7 +1929,7 @@ int xocl_alloc_dev_minor(xdev_handle_t xdev_hdl)
+ 	struct xocl_dev_core *core = (struct xocl_dev_core *)xdev_hdl;
+ 
+ 	core->dev_minor = XOCL_IDA_ALLOC_RANGE(&xocl_dev_minor_ida,
+-		0, 0, GFP_KERNEL);
++		0, INT_MAX, GFP_KERNEL);	/* 0,0 allowed a single device with ida_alloc_range (>= 6.18) */
+ 
+ 	if (core->dev_minor < 0) {
+ 		xocl_err(&core->pdev->dev, "Failed to alloc dev minor");

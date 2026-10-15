@@ -1,0 +1,29 @@
+Innova-2 XDMA shell "inn2x", release r10 (ert4), package 202320.4.0-1.
+
+Copyright 2026 the innova2 contributors.
+Our own work in this package (tools, scripts, platform metadata, documentation, the shell design) is licensed under
+the Apache License, Version 2.0 (see LICENSE in this directory).
+
+The bitstreams, flash images (MCS and BOPE .bin) and xsabin/xclbin files were produced by AMD Vivado/Vitis and also
+contain AMD (Xilinx) IP cores, which remain under the AMD tool/IP licence terms that applied when they were generated
+(not Apache-2.0).
+
+Third-party material in this package:
+* The ERT firmware in the bitstream and flash images (the MicroBlaze's local memory): XRT's command scheduler
+  (src/runtime_src/ert/scheduler, XRT 2.27 master 1ea5176db), Copyright (C) 2016-2019 Xilinx, Inc., licensed under
+  the Apache License, Version 2.0 (LICENSE), with a 4-line change by the innova2 contributors (innova2_shell_src
+  fw/ert/r9_clk_counter.patch); linked with the start-up code of AMD's ERT-BSP, whose notices (Xilinx, Inc. MIT
+  licence; Cygnus Support; DornerWorks; Grzegorz Milos / K A Fraser) are reproduced in LicenseRef-ERT-BSP.txt in this
+  directory, and with libgcc (GCC Runtime Library Exception).
+* test/bandwidth.xclbin: its kernel is built from Xilinx's bandwidth.cpp, Copyright (C) 2019-2021 Xilinx, Inc.,
+  licensed under the Apache License, Version 2.0 (LICENSE). test/verify.xclbin's kernel is the innova2 contributors'
+  own (Apache-2.0).
+* tools/xbflash.probe: built from XRT's xbflash.qspi (Copyright Xilinx, Inc., Apache-2.0) with read-only flash-ID
+  probe hooks by the innova2 contributors; source and build script in the innova2_py_app repository.
+* tools/xrt/*.patch: patches to XRT's xocl driver (Copyright Xilinx, Inc. and Advanced Micro Devices, Inc.), with
+  changes by the innova2 contributors, licensed under the GNU General Public License, version 2 only
+  (GPL-2.0-only.txt in this directory), like the driver they change.
+* AMD IP in the binaries: see LicenseRef-AMD-IP.txt in this directory.
+Licence texts in this directory: LICENSE (Apache-2.0), GPL-2.0-only.txt, LicenseRef-AMD-IP.txt, LicenseRef-ERT-BSP.txt.
+SPDX: Apache-2.0 AND LicenseRef-AMD-IP (bitstream and flash images: AND LicenseRef-ERT-BSP; tools/xrt patches:
+GPL-2.0-only)

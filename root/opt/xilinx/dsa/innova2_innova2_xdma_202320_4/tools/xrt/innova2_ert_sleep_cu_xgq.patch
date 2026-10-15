@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: 2026 the innova2 contributors
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# innova2_ert_sleep_cu_xgq.patch -- in ERT (XGQ) mode cu_xgq_check() reported num_ready = num_done = 1 on every
+# call, so each CU's kernel thread spun at 100% of a core while a command was outstanding. Report the number of
+# responses actually consumed: with none, the thread sleeps on the XGQ interrupt (CU_TIMER as the fallback).
+# Apply to the DKMS tree with `patch -p1 -d /usr/src/xrt-2.27.0`, or to an XRT checkout with
+# `patch -d src/runtime_src/core/pcie/driver/linux -p2`. Base: XRT master 1ea5176db (2.27.0).
+--- a/driver/xocl/subdev/cu_xgq.c
++++ b/driver/xocl/subdev/cu_xgq.c
+@@ -56,11 +56,15 @@ static void cu_xgq_check(void *core, struct xcu_status *status, bool force)
+ {
+ 	struct xrt_cu_xgq *cu_xgq = core;
+ 	uint32_t cu_status = CU_AP_IDLE;
+-
+-	status->num_ready = 1;
+-	status->num_done = 1;
+-
+-	while (!xocl_xgq_check_response(cu_xgq->xgq, cu_xgq->xgq_client_id, &cu_status));
++	u32 n = 0;
++
++	/* innova2 (ert-sleep): report only the responses actually consumed. A constant 1 kept the CU thread's ready
++	 * count non-zero, so in interrupt mode it never slept on sem_cu (which xgq_isr ups) and spun a core for as long
++	 * as a command was outstanding. XGQ CUs do not gate submissions on credits (cu_xgq_peek_credit is always 1). */
++	while (!xocl_xgq_check_response(cu_xgq->xgq, cu_xgq->xgq_client_id, &cu_status))
++		n++;
++	status->num_ready = n;
++	status->num_done = n;
+ 	status->new_status = (cu_status == KDS_SKCRASHED) ? CU_AP_CRASHED : CU_AP_IDLE;
+ }
+ 
